@@ -159,10 +159,10 @@ If you're stuck:
 
 We're looking for:
 
-✅ **TDD Discipline** — tests written first, enabled one at a time
-✅ **Domain Design** — types capture business requirements, not just API contracts
-✅ **Clean Code** — functions small and focused, names explicit
-✅ **Ownership** — handling errors, edge cases, not copying blindly
-✅ **Communication** — clear commit messages, readable code
+* ✅ **TDD Discipline** — tests written first, enabled one at a time
+* ✅ **Domain Design** — types capture business requirements, not just API contracts
+* ✅ **Clean Code** — functions small and focused, names explicit
+* ✅ **Ownership** — handling errors, edge cases, not copying blindly
+* ✅ **Communication** — clear commit messages, readable code
 
 Good luck! 🚀
