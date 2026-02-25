@@ -1,0 +1,13 @@
+{
+  "name": "@qmin/partner-api",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@qmin/partner-common": "workspace:*",
+    "@qmin/partner-advisors": "workspace:*",
+    "@qmin/partner-branches": "workspace:*",
+    "@qmin/partner-repositories": "workspace:*"
+  },
+  "devDependencies": {}
+}

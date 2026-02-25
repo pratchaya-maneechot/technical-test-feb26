@@ -1,0 +1,21 @@
+{
+  "name": "qmin-partner-test",
+  "version": "1.0.0",
+  "description": "Technical test starter repo — senior backend engineer interview",
+  "type": "module",
+  "scripts": {
+    "test": "bun test --watch",
+    "test:run": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.3.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "bun": ">=1.0.0"
+  }
+}
