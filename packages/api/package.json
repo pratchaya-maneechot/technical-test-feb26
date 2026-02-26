@@ -4,10 +4,11 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@qmin/partner-common": "workspace:*",
     "@qmin/partner-advisors": "workspace:*",
     "@qmin/partner-branches": "workspace:*",
-    "@qmin/partner-repositories": "workspace:*"
+    "@qmin/partner-common": "workspace:*",
+    "@qmin/partner-repositories": "workspace:*",
+    "fastify": "^5.7.4"
   },
   "devDependencies": {}
 }
