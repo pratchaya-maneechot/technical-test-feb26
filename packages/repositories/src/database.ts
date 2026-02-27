@@ -1,7 +1,22 @@
+import type { PostgresJsDatabase } from "drizzle-orm/postgres-js"
+import * as schema from "./schema"
+import { drizzle } from 'drizzle-orm/postgres-js';
+
 /**
- * Database type (placeholder for Drizzle or other ORM).
- * In production, this would be a Drizzle Database instance.
+ * Database type
  */
-export interface Database {
-  // TODO: define database interface or import from Drizzle
+export type Database = PostgresJsDatabase<typeof schema>
+
+export interface NewPostgresJsDatabaseOptions {
+  connectionString: string
+  ssl?: boolean
+}
+
+export function NewPostgresJsDatabase(options: NewPostgresJsDatabaseOptions): Database {
+  return drizzle({
+    connection: {
+      url: options.connectionString,
+      ssl: options.ssl ?? false
+    }
+  });
 }
