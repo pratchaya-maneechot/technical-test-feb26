@@ -1,56 +1,73 @@
 import { BranchStatus } from "@qmin/partner-common"
 
 /**
- * TODO: Define the Branch domain entity.
- *
- * Reference the Advisor entity in packages/advisors/src/types.ts for patterns.
- *
- * Fields:
- * - branchId: string (UUID)
- * - branchCode: string (unique, e.g. "BKK-NORTH-01")
- * - name: string
- * - channelId: string (Channel FK)
- * - managerId: string | null (optional Advisor FK)
- * - status: BranchStatus ("ACTIVE" or "INACTIVE")
- * - region: string
- * - attributes: Record<string, string> (key-value metadata)
- * - workspaceCode: string (immutable after creation)
- * - createdAt: Date
- * - updatedAt: Date
- * - createdBy: string
+ * Define the Branch domain entity.
  */
 export interface Branch {
-  // TODO: implement
+  branchId: string
+  branchCode: string
+  name: string
+  channelId: string
+  managerId: string | null
+  status: BranchStatus
+  region: string
+  attributes: Record<string, string>
+  workspaceCode: string
+  createdAt: Date
+  updatedAt: Date
+  createdBy: string
 }
 
 /**
- * TODO: Define input for creating a Branch.
+ * Define input for creating a Branch.
  * workspaceCode is optional, defaults to "default".
  */
 export interface BranchCreate {
-  // TODO: implement
+  branchCode: string
+  name: string
+  channelId: string
+  managerId: string | null
+  status: BranchStatus
+  region: string
+  attributes: Record<string, string>
+  workspaceCode?: string
 }
 
 /**
- * TODO: Define input for updating a Branch.
+ * Define input for updating a Branch.
  * workspaceCode cannot be changed (immutable).
  */
 export interface BranchUpdate {
-  // TODO: implement
+  branchCode?: string
+  name?: string
+  channelId?: string
+  managerId?: string | null
+  status?: BranchStatus
+  region?: string
+  attributes?: Record<string, string>
 }
 
 /**
- * TODO: Define filter options for listing Branches.
+ * Define filter options for listing Branches.
  */
 export interface BranchFilters {
-  // TODO: implement
+  status?: BranchStatus
+  workspaceCode?: string
 }
 
 /**
- * TODO: Define the BranchRepository interface.
+ * Define the BranchRepository interface.
  * Methods: getById, list, create, update, delete
- * Reference AdvisorRepository in packages/advisors/src/types.ts.
  */
 export interface BranchRepository {
-  // TODO: implement
+  getById(id: string): Promise<Branch | null>
+  getByCode(code: string): Promise<Branch | null>
+  list(
+    filters: BranchFilters,
+    limit: number,
+    offset: number
+  ): Promise<{ rows: Branch[]; count: number }>
+  create(input: BranchCreate): Promise<Branch>
+  update(id: string, input: BranchUpdate): Promise<Branch | null>
+  delete(id: string): Promise<boolean>
 }
