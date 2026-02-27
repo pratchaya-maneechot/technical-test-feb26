@@ -14,26 +14,49 @@
  */
 
 import { BranchFilters, BranchUpdate, Branch } from "@qmin/partner-branches"
+import { eq } from "drizzle-orm"
+import { branches } from "./schema"
+import { BranchInsert, BranchSelect } from "./types"
 
-/**
- * TODO: Build SQL WHERE conditions from filter options.
- */
 export function buildFilterConditions(filters: BranchFilters): unknown[] {
-  throw new Error("TODO: implement buildFilterConditions")
+  const conditions: unknown[] = []
+
+  if (filters.status) {
+    conditions.push(eq(branches.status, filters.status))
+  }
+  if (filters.workspaceCode) {
+    conditions.push(eq(branches.workspace_code, filters.workspaceCode))
+  }
+
+  return conditions
 }
 
-/**
- * TODO: Build SQL SET values from update input.
- * Exclude immutable fields (workspaceCode, createdAt, branchId).
- */
-export function buildUpdateValues(input: BranchUpdate): Record<string, unknown> {
-  throw new Error("TODO: implement buildUpdateValues")
+export function buildUpdateValues(input: BranchUpdate): Partial<BranchInsert> {
+  return {
+    branch_code: input.branchCode,
+    name: input.name,
+    channel_id: input.channelId,
+    manager_id: input.managerId,
+    status: input.status,
+    region: input.region,
+    attributes: input.attributes,
+    updated_at: new Date(),
+  }
 }
 
-/**
- * TODO: Convert database row to Branch entity.
- * Handle date serialization: createdAt.toISOString(), updatedAt.toISOString()
- */
-export function mapRow(row: any): Branch {
-  throw new Error("TODO: implement mapRow")
+export function mapRow(row: BranchSelect): Branch {
+  return {
+    branchId: row.branch_id,
+    branchCode: row.branch_code,
+    name: row.name,
+    channelId: row.channel_id,
+    managerId: row.manager_id,
+    status: row.status as Branch['status'],
+    region: row.region,
+    attributes: row.attributes as Branch['attributes'],
+    workspaceCode: row.workspace_code,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    createdBy: row.created_by || "system"
+  }
 }
