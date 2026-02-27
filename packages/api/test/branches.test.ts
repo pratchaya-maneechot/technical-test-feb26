@@ -1,6 +1,6 @@
 import { describe, test, expect } from "bun:test"
 import { BranchService } from "@qmin/partner-branches"
-import { createMockBranchRepository, MOCK_BRANCH } from "@qmin/partner-branches/test"
+import { createMockBranchRepository } from "@qmin/partner-branches/test"
 import { branchesController } from "../src/controllers/branches"
 
 /**
