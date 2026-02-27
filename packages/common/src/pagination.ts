@@ -6,7 +6,6 @@ export interface PaginationOptions {
 export interface PaginationMeta {
   pageNumber: number
   pageSize: number
-  totalCount: number
 }
 
 /**
@@ -14,7 +13,6 @@ export interface PaginationMeta {
  * Defaults: pageNumber=1, pageSize=30
  */
 export function buildPaginationMeta(
-  totalCount: number,
   options: PaginationOptions
 ): PaginationMeta {
   const pageNumber = Math.max(1, options.pageNumber ?? 1)
@@ -23,7 +21,6 @@ export function buildPaginationMeta(
   return {
     pageNumber,
     pageSize,
-    totalCount,
   }
 }
 
@@ -32,7 +29,7 @@ export function buildPaginationMeta(
  * Offset = (pageNumber - 1) * pageSize
  */
 export function calculateOffset(
-  pageNumber: number,
+  pageNumber: number, 
   pageSize: number
 ): number {
   return (pageNumber - 1) * pageSize
