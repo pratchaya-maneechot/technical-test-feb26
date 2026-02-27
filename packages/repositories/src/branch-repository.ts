@@ -1,27 +1,17 @@
 /**
- * TODO: Implement BranchDrizzleRepository.
+ * Branch Drizzle repository implementation.
+ * Uses Drizzle ORM to query PostgreSQL for Branch entities.
  *
- * Pattern (reference AdvisorDrizzleRepository):
- * 1. Accept database connection in constructor
- * 2. Implement getById, list, create, update, delete methods
- * 3. Support filtering by status, workspaceCode
- * 4. Use helper functions for SQL condition building (branch-repository-helpers.ts)
- * 5. Handle date serialization (toISOString)
- *
- * Unique logic for branches:
- * - branchCode must be unique (ConflictError on duplicate)
- * - managerId is nullable (Advisor FK)
- * - attributes is JSONB column
+ * For testing purposes, the mock implementation (packages/branches/test/fixtures.ts)
+ * provides a working in-memory store.
  */
 
 import { Branch, BranchCreate, BranchFilters, BranchRepository, BranchUpdate } from "@qmin/partner-branches"
 import { Database } from "./database"
 import { branches } from "./schema"
-import { eq, and, count } from "drizzle-orm"
-import { buildFilterConditions, buildUpdateValues, mapRow } from "./branch-repository-helpers"
-import crypto from "crypto"
-import { RequestContext } from "@qmin/common"
-import { BranchInsert } from "./types"
+import { eq, and, sql } from "drizzle-orm"
+import { buildFilterConditions, buildInsertValues, buildUpdateValues, mapRow } from "./branch-repository-helpers"
+import { RequestContext } from "@qmin/partner-common"
 
 export class BranchDrizzleRepository implements BranchRepository {
   constructor(private readonly db: Database, private readonly ctx: RequestContext) {}
@@ -41,7 +31,7 @@ export class BranchDrizzleRepository implements BranchRepository {
     const whereClause = conditions.length > 0 ? and(...conditions as any[]) : undefined
     
     const [{ total }] = await this.db
-      .select({ total: count()})
+      .select({ total: sql<number>`count(*)` })
       .from(branches)
       .where(whereClause)
       
@@ -56,32 +46,28 @@ export class BranchDrizzleRepository implements BranchRepository {
   }
 
   async create(input: BranchCreate): Promise<Branch> {
-    const values: BranchInsert = {
-      branch_id: crypto.randomUUID(),
-      branch_code: input.branchCode,
-      name: input.name,
-      channel_id: input.channelId,
-      manager_id: input.managerId ?? null,
-      status: input.status,
-      region: input.region,
-      attributes: input.attributes,
-      workspace_code: input.workspaceCode ?? "default",
-      created_by: this.ctx.userId
-    }
+    const values = buildInsertValues(input, this.ctx.userId)
     const [row] = await this.db.insert(branches).values(values).returning()
     return mapRow(row)
   }
 
   async update(id: string, input: BranchUpdate): Promise<Branch | null> {
     const updateValues = buildUpdateValues(input)
-    if (Object.keys(updateValues).length === 0) {
-      return this.getById(id)
+    const existingBranch = await this.getById(id)
+
+    if (!existingBranch) {
+      return null
     }
+
+    if (Object.keys(updateValues).length === 0) {
+      return existingBranch
+    }
+
     const [row] = await this.db.update(branches)
       .set(updateValues)
       .where(eq(branches.branch_id, id))
       .returning()
-    return row ? mapRow(row) : null
+    return mapRow(row)
   }
 
   async delete(id: string): Promise<boolean> {

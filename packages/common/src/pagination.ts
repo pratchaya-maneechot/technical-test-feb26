@@ -26,6 +26,11 @@ export function buildPaginationMeta(
     totalCount,
   }
 }
+
+/**
+ * Resolve and clamp pagination options to valid defaults.
+ * Defaults: pageNumber=1, pageSize=30, max pageSize=100.
+ */
 export function buildPaginationOptions(
   options: PaginationOptions
 ): Required<PaginationOptions> {

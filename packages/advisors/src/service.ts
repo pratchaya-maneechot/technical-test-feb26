@@ -1,10 +1,10 @@
-import { ADVISOR_STATUSES, ADVISOR_TYPES, ADVISOR_ROLES, NotFoundError, ValidationError, ConflictError, calculateOffset, type RequestContext } from "@qmin/partner-common"
+import { ADVISOR_STATUSES, ADVISOR_TYPES, ADVISOR_ROLES, NotFoundError, ValidationError, calculateOffset, type RequestContext } from "@qmin/partner-common"
 import { Advisor, AdvisorCreate, AdvisorFilters, AdvisorRepository, AdvisorUpdate } from "./types"
 
 export class AdvisorService {
   constructor(private repository: AdvisorRepository) {}
 
-  async getById(id: string, ctx: RequestContext): Promise<Advisor> {
+  async getById(id: string, _ctx: RequestContext): Promise<Advisor> {
     const advisor = await this.repository.getById(id)
     if (!advisor) {
       throw new NotFoundError(`Advisor ${id} not found`)
@@ -12,7 +12,7 @@ export class AdvisorService {
     return advisor
   }
 
-  async list(filters: AdvisorFilters, options: { pageNumber?: number; pageSize?: number }, ctx: RequestContext): Promise<{ advisors: Advisor[]; totalCount: number }> {
+  async list(filters: AdvisorFilters, options: { pageNumber?: number; pageSize?: number }, _ctx: RequestContext): Promise<{ advisors: Advisor[]; totalCount: number }> {
     const pageNumber = Math.max(1, options.pageNumber ?? 1)
     const pageSize = Math.max(1, Math.min(100, options.pageSize ?? 30))
     const offset = calculateOffset(pageNumber, pageSize)
@@ -21,7 +21,7 @@ export class AdvisorService {
     return { advisors: rows, totalCount: count }
   }
 
-  async create(input: AdvisorCreate, ctx: RequestContext): Promise<Advisor> {
+  async create(input: AdvisorCreate, _ctx: RequestContext): Promise<Advisor> {
     this.validateCreate(input)
     const advisor = await this.repository.create({
       ...input,
@@ -30,7 +30,7 @@ export class AdvisorService {
     return advisor
   }
 
-  async update(id: string, input: AdvisorUpdate, ctx: RequestContext): Promise<Advisor> {
+  async update(id: string, input: AdvisorUpdate, _ctx: RequestContext): Promise<Advisor> {
     this.validateUpdate(input)
     const advisor = await this.repository.update(id, input)
     if (!advisor) {
@@ -39,7 +39,7 @@ export class AdvisorService {
     return advisor
   }
 
-  async delete(id: string, ctx: RequestContext): Promise<void> {
+  async delete(id: string, _ctx: RequestContext): Promise<void> {
     const deleted = await this.repository.delete(id)
     if (!deleted) {
       throw new NotFoundError(`Advisor ${id} not found`)

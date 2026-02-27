@@ -24,7 +24,6 @@ function buildApp(service: BranchService) {
     },
   }
 
-  // Call controller to register routes
   branchesController(mockApp as any, service)
 
   return { mockApp, routes }

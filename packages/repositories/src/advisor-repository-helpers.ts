@@ -4,7 +4,7 @@
  * extract update values, and map database rows to domain entities.
  */
 
-import { AdvisorFilters, AdvisorUpdate, Advisor } from "@qmin/partner-advisors"
+import { AdvisorFilters, AdvisorUpdate, Advisor, AdvisorCreate } from "@qmin/partner-advisors"
 import { eq } from "drizzle-orm"
 import { advisors } from "./schema"
 import { AdvisorInsert, AdvisorSelect } from "./types"
@@ -42,6 +42,25 @@ export function buildUpdateValues(input: AdvisorUpdate): Partial<AdvisorInsert> 
     status: input.status ?? undefined,
     role: input.role ?? undefined,
     updated_at: new Date(),
+  }
+}
+
+/**
+ * Build SQL INSERT values from create input.
+ * Example: { firstName: "Jane", email: "jane@example.com", status: "ACTIVE" } → { first_name: "Jane", ... }
+ */
+export function buildInsertValues(input: AdvisorCreate): AdvisorInsert {
+  return {
+    id: crypto.randomUUID(),
+    first_name: input.firstName,
+    last_name: input.lastName,
+    email: input.email,
+    type: input.type,
+    status: input.status,
+    role: input.role,
+    created_at: new Date(),
+    updated_at: new Date(),
+    workspace_code: input.workspaceCode,
   }
 }
 

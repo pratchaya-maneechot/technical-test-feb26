@@ -1,6 +1,6 @@
 export { AdvisorDrizzleRepository } from "./advisor-repository"
 export { BranchDrizzleRepository } from "./branch-repository"
-export { buildFilterConditions as buildAdvisorFilterConditions, buildUpdateValues as buildAdvisorUpdateValues, mapRow as mapAdvisorRow } from "./advisor-repository-helpers"
-export { buildFilterConditions as buildBranchFilterConditions, buildUpdateValues as buildBranchUpdateValues, mapRow as mapBranchRow } from "./branch-repository-helpers"
+export { buildFilterConditions as buildAdvisorFilterConditions, buildInsertValues as buildAdvisorInsertValues, buildUpdateValues as buildAdvisorUpdateValues, mapRow as mapAdvisorRow } from "./advisor-repository-helpers"
+export { buildFilterConditions as buildBranchFilterConditions, buildInsertValues as buildBranchInsertValues, buildUpdateValues as buildBranchUpdateValues, mapRow as mapBranchRow } from "./branch-repository-helpers"
 export type { Database } from "./database"
 export type * from "./types"

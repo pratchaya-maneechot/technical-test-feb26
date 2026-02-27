@@ -25,7 +25,6 @@ function buildApp(service: AdvisorService) {
     },
   }
 
-  // Call controller to register routes
   advisorsController(mockApp as any, service)
 
   return { mockApp, routes }
@@ -44,8 +43,6 @@ describe("AdvisorsController", () => {
       hasAdvisors: true,
     }
 
-    // In real test: use app.inject()
-    // Here we just verify routes are registered
     expect(routes.has("GET /v1/advisors")).toBe(true)
     expect(expected.status).toBe(200)
   })

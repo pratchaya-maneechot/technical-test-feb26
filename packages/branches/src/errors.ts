@@ -1,22 +1,22 @@
-import { ConflictError, NotFoundError, ValidationError } from "@qmin/common"
+import { ConflictError, NotFoundError, ValidationError } from "@qmin/partner-common"
 
 export class BranchNotFoundError extends NotFoundError {
-  constructor(msg?:string) {
+  constructor(msg?: string) {
     super(msg ?? "Branch not found")
-    this.name = "BranchNotFoundError"
+    this.name = BranchNotFoundError.name
   }
 }
 
-export class BranchConflictError extends ConflictError {
-  constructor(msg?:string) {
+export class BranchCodeConflictError extends ConflictError {
+  constructor(msg?: string) {
     super(msg ?? "Branch code already exists")
-    this.name = "BranchConflictError"
+    this.name = BranchCodeConflictError.name
   }
 }
 
 export class BranchStatusValidationError extends ValidationError {
-  constructor(msg?:string) {
+  constructor(msg?: string) {
     super(msg ?? "Invalid status")
-    this.name = "BranchStatusValidationError"
+    this.name = BranchStatusValidationError.name
   }
 }

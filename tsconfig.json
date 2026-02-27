@@ -27,7 +27,8 @@
     "baseUrl": ".",
     "paths": {
       "@qmin/*": ["./packages/*/src"]
-    }
+    },
+    "skipLibCheck": true
   },
   "include": ["packages/*/src/**/*", "packages/*/test/**/*"],
   "exclude": ["node_modules", "dist"]

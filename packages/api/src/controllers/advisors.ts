@@ -1,5 +1,5 @@
 /**
- * Advisor controller (reference implementation).
+ * Advisor controller.
  * Registers Fastify routes for Advisor CRUD endpoints.
  *
  * Endpoints:
@@ -11,11 +11,10 @@
  */
 
 import { FastifyInstance } from "fastify"
-import { handleError, createTestContext } from "@qmin/partner-common"
+import { handleError, createTestContext, buildPaginationMeta } from "@qmin/partner-common"
 import { AdvisorCreate, AdvisorService, AdvisorUpdate } from "@qmin/partner-advisors"
 
 export async function advisorsController(app: FastifyInstance, service: AdvisorService) {
-  // List advisors
   app.get<{ Querystring: Record<string, string> }>("/v1/advisors", async (request, reply) => {
     try {
       const ctx = createTestContext(request.id)
@@ -33,11 +32,7 @@ export async function advisorsController(app: FastifyInstance, service: AdvisorS
 
       return {
         advisors,
-        pagination: {
-          pageNumber: options.pageNumber ?? 1,
-          pageSize: options.pageSize ?? 30,
-          totalCount,
-        },
+        pagination: buildPaginationMeta(totalCount, options),
       }
     } catch (error) {
       const { status, body } = handleError(error)
@@ -46,7 +41,6 @@ export async function advisorsController(app: FastifyInstance, service: AdvisorS
     }
   })
 
-  // Get advisor by ID
   app.get<{ Params: { advisorId: string } }>("/v1/advisors/:advisorId", async (request, reply) => {
     try {
       const ctx = createTestContext(request.id)
@@ -59,7 +53,6 @@ export async function advisorsController(app: FastifyInstance, service: AdvisorS
     }
   })
 
-  // Create advisor
   app.post<{ Body: AdvisorCreate }>("/v1/advisors", async (request, reply) => {
     try {
       const ctx = createTestContext(request.id)
@@ -73,7 +66,6 @@ export async function advisorsController(app: FastifyInstance, service: AdvisorS
     }
   })
 
-  // Update advisor
   app.patch<{ Params: { advisorId: string }; Body: AdvisorUpdate }>("/v1/advisors/:advisorId", async (request, reply) => {
     try {
       const ctx = createTestContext(request.id)
@@ -86,7 +78,6 @@ export async function advisorsController(app: FastifyInstance, service: AdvisorS
     }
   })
 
-  // Delete advisor
   app.delete<{ Params: { advisorId: string } }>("/v1/advisors/:advisorId", async (request, reply) => {
     try {
       const ctx = createTestContext(request.id)

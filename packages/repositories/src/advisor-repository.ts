@@ -8,27 +8,10 @@
  */
 
 import { Advisor, AdvisorCreate, AdvisorFilters, AdvisorRepository, AdvisorUpdate } from "@qmin/partner-advisors"
-
-/**
- * TODO (real implementation): AdvisorDrizzleRepository
- * - Inject a database connection
- * - Implement each method using Drizzle query builders
- * - Handle date serialization (toISOString for createdAt/updatedAt)
- * - Support workspaceCode filtering
- *
- * Pattern:
- * async getById(id: string): Promise<Advisor | null> {
- *   const row = await db.query.advisors.findFirst({ where: eq(schema.advisors.id, id) })
- *   return row ? mapRow(row) : null
- * }
- */
-
 import { Database } from "./database"
 import { advisors } from "./schema"
 import { eq, and, sql } from "drizzle-orm"
-import { buildFilterConditions, buildUpdateValues, mapRow } from "./advisor-repository-helpers"
-import crypto from "crypto"
-import { AdvisorInsert } from "./types"
+import { buildFilterConditions, buildInsertValues, buildUpdateValues, mapRow } from "./advisor-repository-helpers"
 
 export class AdvisorDrizzleRepository implements AdvisorRepository {
   constructor(private readonly db: Database) {}
@@ -58,16 +41,7 @@ export class AdvisorDrizzleRepository implements AdvisorRepository {
   }
 
   async create(input: AdvisorCreate): Promise<Advisor> {
-    const values: AdvisorInsert = {
-      id: crypto.randomUUID(),
-      first_name: input.firstName,
-      last_name: input.lastName,
-      email: input.email,
-      type: input.type,
-      status: input.status,
-      role: input.role,
-      workspace_code: input.workspaceCode ?? "default"
-    }
+    const values = buildInsertValues(input)
 
     const [row] = await this.db.insert(advisors).values(values).returning()
     return mapRow(row)
@@ -75,8 +49,14 @@ export class AdvisorDrizzleRepository implements AdvisorRepository {
 
   async update(id: string, input: AdvisorUpdate): Promise<Advisor | null> {
     const updateValues = buildUpdateValues(input)
+    const existingAdvisor = await this.getById(id)
+
+    if (!existingAdvisor) {
+      return null
+    }
+
     if (Object.keys(updateValues).length === 0) {
-      return this.getById(id)
+      return existingAdvisor
     }
 
     const [row] = await this.db.update(advisors)
@@ -84,7 +64,7 @@ export class AdvisorDrizzleRepository implements AdvisorRepository {
       .where(eq(advisors.id, id))
       .returning()
 
-    return row ? mapRow(row) : null
+    return mapRow(row)
   }
 
   async delete(id: string): Promise<boolean> {

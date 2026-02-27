@@ -1,26 +1,20 @@
 /**
- * TODO: Implement branchesController.
+ * Branch controller.
+ * Registers Fastify routes for Branch CRUD endpoints.
  *
- * Pattern (reference branchesController):
- * 1. Accept Fastify app instance and brancheservice
- * 2. Register endpoints:
- *    - GET /v1/branches — list (filterable, paginated)
- *    - GET /v1/branches/:branchId — get one
- *    - POST /v1/branches — create
- *    - PATCH /v1/branches/:branchId — update (optional, but include)
- *    - DELETE /v1/branches/:branchId — delete
- * 3. Extract query params, request body, URL params
- * 4. Call service methods passing RequestContext
- * 5. Handle errors with handleError()
- * 6. Return appropriate status codes (200, 201, 204, 400, 404, 409)
+ * Endpoints:
+ * - GET /v1/branches — list branches (filterable, paginated)
+ * - GET /v1/branches/:branchId — get one
+ * - POST /v1/branches — create
+ * - PATCH /v1/branches/:branchId — update
+ * - DELETE /v1/branches/:branchId — delete
  */
 
 import { FastifyInstance } from "fastify"
 import { BranchCreate, BranchService, BranchUpdate } from "@qmin/partner-branches"
-import { buildPaginationMeta, createTestContext, handleError } from "@qmin/common"
+import { buildPaginationMeta, createTestContext, handleError } from "@qmin/partner-common"
 
 export async function branchesController(app: FastifyInstance, service: BranchService) {
-  // List branches
   app.get<{ Querystring: Record<string, string> }>("/v1/branches", async (request, reply) => {
     try {
       const ctx = createTestContext(request.id)
@@ -46,7 +40,6 @@ export async function branchesController(app: FastifyInstance, service: BranchSe
     }
   })
 
-  // Get branch by ID
   app.get<{ Params: { branchId: string } }>("/v1/branches/:branchId", async (request, reply) => {
     try {
       const ctx = createTestContext(request.id)
@@ -59,7 +52,6 @@ export async function branchesController(app: FastifyInstance, service: BranchSe
     }
   })
 
-  // Create branch
   app.post<{ Body: BranchCreate }>("/v1/branches", async (request, reply) => {
     try {
       const ctx = createTestContext(request.id)
@@ -73,7 +65,6 @@ export async function branchesController(app: FastifyInstance, service: BranchSe
     }
   })
 
-  // Update branch
   app.patch<{ Params: { branchId: string }; Body: BranchUpdate }>("/v1/branches/:branchId", async (request, reply) => {
     try {
       const ctx = createTestContext(request.id)
@@ -86,7 +77,6 @@ export async function branchesController(app: FastifyInstance, service: BranchSe
     }
   })
 
-  // Delete branch
   app.delete<{ Params: { branchId: string } }>("/v1/branches/:branchId", async (request, reply) => {
     try {
       const ctx = createTestContext(request.id)
