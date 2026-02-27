@@ -10,9 +10,9 @@
  * - DELETE /v1/advisors/:advisorId — delete
  */
 
-import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify"
+import { FastifyInstance } from "fastify"
 import { handleError, createTestContext } from "@qmin/partner-common"
-import { AdvisorService } from "@qmin/partner-advisors"
+import { AdvisorCreate, AdvisorService, AdvisorUpdate } from "@qmin/partner-advisors"
 
 export async function advisorsController(app: FastifyInstance, service: AdvisorService) {
   // List advisors
@@ -60,7 +60,7 @@ export async function advisorsController(app: FastifyInstance, service: AdvisorS
   })
 
   // Create advisor
-  app.post<{ Body: Record<string, any> }>("/v1/advisors", async (request, reply) => {
+  app.post<{ Body: AdvisorCreate }>("/v1/advisors", async (request, reply) => {
     try {
       const ctx = createTestContext(request.id)
       const advisor = await service.create(request.body, ctx)
@@ -74,7 +74,7 @@ export async function advisorsController(app: FastifyInstance, service: AdvisorS
   })
 
   // Update advisor
-  app.patch<{ Params: { advisorId: string }; Body: Record<string, any> }>("/v1/advisors/:advisorId", async (request, reply) => {
+  app.patch<{ Params: { advisorId: string }; Body: AdvisorUpdate }>("/v1/advisors/:advisorId", async (request, reply) => {
     try {
       const ctx = createTestContext(request.id)
       const advisor = await service.update(request.params.advisorId, request.body, ctx)

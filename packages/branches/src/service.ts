@@ -1,8 +1,9 @@
 import {
-  BRANCH_STATUSES, buildPaginationMeta, calculateOffset, PaginationOptions, RequestContext
+  BRANCH_STATUSES, calculateOffset, PaginationOptions, RequestContext
 } from "@qmin/partner-common"
 import { Branch, BranchCreate, BranchFilters, BranchRepository, BranchUpdate } from "./types"
 import { BranchConflictError, BranchNotFoundError, BranchStatusValidationError } from "./errors"
+import { buildPaginationOptions } from "@qmin/common"
 
 export class BranchService {
   constructor(private repository: BranchRepository) {}
@@ -16,7 +17,7 @@ export class BranchService {
   }
 
   async list(filters: BranchFilters, options: PaginationOptions, _: RequestContext): Promise<{ branches: Branch[]; totalCount: number }> {
-    const pagination = buildPaginationMeta(options)
+    const pagination = buildPaginationOptions(options)
 
     const result = await this.repository.list(
       filters,

@@ -1,5 +1,5 @@
 export { NotFoundError, ValidationError, ConflictError, handleError } from "./errors"
-export { buildPaginationMeta, calculateOffset, type PaginationOptions, type PaginationMeta } from "./pagination"
+export { buildPaginationMeta, buildPaginationOptions, calculateOffset, type PaginationOptions, type PaginationMeta } from "./pagination"
 export { ADVISOR_TYPES, ADVISOR_STATUSES, ADVISOR_ROLES, BRANCH_STATUSES, type AdvisorType, type AdvisorStatus, type AdvisorRole, type BranchStatus } from "./constants"
 export { createTestContext, type RequestContext } from "./context"
 export type { Logger } from "./logger"

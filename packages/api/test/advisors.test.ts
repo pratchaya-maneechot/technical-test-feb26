@@ -1,6 +1,6 @@
-import { describe, test, expect, beforeEach } from "bun:test"
+import { describe, test, expect } from "bun:test"
 import { AdvisorService } from "@qmin/partner-advisors"
-import { createMockAdvisorRepository, MOCK_ADVISOR } from "@qmin/partner-advisors/test"
+import { createMockAdvisorRepository } from "@qmin/partner-advisors/test"
 import { advisorsController } from "../src/controllers/advisors"
 
 /**

@@ -6,6 +6,7 @@ export interface PaginationOptions {
 export interface PaginationMeta {
   pageNumber: number
   pageSize: number
+  totalCount: number
 }
 
 /**
@@ -13,11 +14,23 @@ export interface PaginationMeta {
  * Defaults: pageNumber=1, pageSize=30
  */
 export function buildPaginationMeta(
+  totalCount: number,
   options: PaginationOptions
 ): PaginationMeta {
   const pageNumber = Math.max(1, options.pageNumber ?? 1)
   const pageSize = Math.max(1, Math.min(100, options.pageSize ?? 30))
 
+  return {
+    pageNumber,
+    pageSize,
+    totalCount,
+  }
+}
+export function buildPaginationOptions(
+  options: PaginationOptions
+): Required<PaginationOptions> {
+  const pageNumber = Math.max(1, options.pageNumber ?? 1)
+  const pageSize = Math.max(1, Math.min(100, options.pageSize ?? 30))
   return {
     pageNumber,
     pageSize,
