@@ -4,7 +4,7 @@ import { BranchService } from "../src"
 import { MOCK_BRANCH, createMockBranchRepository } from "./fixtures"
 
 describe("BranchService", () => {
-  test.skip("getById returns branch by id", async () => {
+  test("getById returns branch by id", async () => {
     const expected = MOCK_BRANCH
     const input = { repository: createMockBranchRepository() }
     const service = new BranchService(input.repository)
@@ -15,7 +15,7 @@ describe("BranchService", () => {
     expect(result).toEqual(expected)
   })
 
-  test.skip("getById throws NotFoundError for unknown id", async () => {
+  test("getById throws NotFoundError for unknown id", async () => {
     const input = { repository: createMockBranchRepository() }
     const service = new BranchService(input.repository)
     const ctx = createTestContext()
@@ -28,7 +28,7 @@ describe("BranchService", () => {
     }
   })
 
-  test.skip("create persists and returns new branch", async () => {
+  test("create persists and returns new branch", async () => {
     const input = {
       repository: createMockBranchRepository(),
       createInput: {
@@ -38,8 +38,8 @@ describe("BranchService", () => {
         managerId: "adv-456",
         status: "ACTIVE" as const,
         region: "Bangkok",
-        attributes: { zone: "north", tier: "premium" },
-      },
+        attributes: { zone: "north", tier: "premium" }
+      }
     }
     const service = new BranchService(input.repository)
     const ctx = createTestContext()
@@ -53,7 +53,7 @@ describe("BranchService", () => {
     expect(result.createdAt).toBeDefined()
   })
 
-  test.skip("create throws ConflictError for duplicate branchCode", async () => {
+  test("create throws ConflictError for duplicate branchCode", async () => {
     const input = {
       repository: createMockBranchRepository(),
       createInput: {
@@ -63,8 +63,8 @@ describe("BranchService", () => {
         managerId: null,
         status: "ACTIVE" as const,
         region: "Bangkok",
-        attributes: {},
-      },
+        attributes: {}
+      }
     }
     const service = new BranchService(input.repository)
     const ctx = createTestContext()
@@ -77,7 +77,7 @@ describe("BranchService", () => {
     }
   })
 
-  test.skip("create throws ValidationError for invalid status", async () => {
+  test("create throws ValidationError for invalid status", async () => {
     const input = {
       repository: createMockBranchRepository(),
       createInput: {
@@ -87,8 +87,8 @@ describe("BranchService", () => {
         managerId: null,
         status: "INVALID_STATUS" as unknown as "ACTIVE",
         region: "Bangkok",
-        attributes: {},
-      },
+        attributes: {}
+      }
     }
     const service = new BranchService(input.repository)
     const ctx = createTestContext()
@@ -101,7 +101,7 @@ describe("BranchService", () => {
     }
   })
 
-  test.skip("list returns branches filtered by status", async () => {
+  test("list returns branches filtered by status", async () => {
     const input = { repository: createMockBranchRepository() }
     const service = new BranchService(input.repository)
     const ctx = createTestContext()
