@@ -5,22 +5,24 @@
  */
 
 import { AdvisorFilters, AdvisorUpdate, Advisor } from "@qmin/partner-advisors"
+import { eq } from "drizzle-orm"
+import { advisors } from "./schema"
+import { AdvisorInsert, AdvisorSelect } from "./types"
 
 /**
  * Build SQL WHERE conditions from filter options.
- * Example: if filters.status is "ACTIVE", returns condition: `status = 'ACTIVE'`
  */
 export function buildFilterConditions(filters: AdvisorFilters): unknown[] {
   const conditions: unknown[] = []
 
   if (filters.status) {
-    conditions.push(`status = '${filters.status}'`)
+    conditions.push(eq(advisors.status, filters.status))
   }
   if (filters.type) {
-    conditions.push(`type = '${filters.type}'`)
+    conditions.push(eq(advisors.type, filters.type))
   }
   if (filters.workspaceCode) {
-    conditions.push(`workspace_code = '${filters.workspaceCode}'`)
+    conditions.push(eq(advisors.workspace_code, filters.workspaceCode))
   }
 
   return conditions
@@ -31,36 +33,33 @@ export function buildFilterConditions(filters: AdvisorFilters): unknown[] {
  * Exclude immutable fields (workspaceCode, createdAt, advisorId).
  * Example: { firstName: "John", status: "ACTIVE" } → { first_name: "John", status: "ACTIVE" }
  */
-export function buildUpdateValues(input: AdvisorUpdate): Record<string, unknown> {
-  const values: Record<string, unknown> = {}
-
-  if (input.firstName !== undefined) values.first_name = input.firstName
-  if (input.lastName !== undefined) values.last_name = input.lastName
-  if (input.email !== undefined) values.email = input.email
-  if (input.type !== undefined) values.type = input.type
-  if (input.status !== undefined) values.status = input.status
-  if (input.role !== undefined) values.role = input.role
-
-  values.updated_at = new Date()
-
-  return values
+export function buildUpdateValues(input: AdvisorUpdate): Partial<AdvisorInsert> {
+  return {
+    first_name: input.firstName ?? undefined,
+    last_name: input.lastName ?? undefined,
+    email: input.email ?? undefined,
+    type: input.type ?? undefined,
+    status: input.status ?? undefined,
+    role: input.role ?? undefined,
+    updated_at: new Date(),
+  }
 }
 
 /**
  * Convert database row to Advisor entity.
  * Handles column name mapping (snake_case → camelCase) and date serialization.
  */
-export function mapRow(row: any): Advisor {
+export function mapRow(row: AdvisorSelect): Advisor {
   return {
     advisorId: row.id,
     firstName: row.first_name,
     lastName: row.last_name,
     email: row.email,
-    type: row.type,
-    status: row.status,
-    role: row.role,
+    type: row.type as Advisor['type'],
+    status: row.status as Advisor['status'],
+    role: row.role as Advisor['role'],
     workspaceCode: row.workspace_code,
-    createdAt: new Date(row.created_at),
-    updatedAt: new Date(row.updated_at),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
   }
 }

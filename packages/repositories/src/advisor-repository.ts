@@ -23,32 +23,72 @@ import { Advisor, AdvisorCreate, AdvisorFilters, AdvisorRepository, AdvisorUpdat
  * }
  */
 
+import { Database } from "./database"
+import { advisors } from "./schema"
+import { eq, and, sql } from "drizzle-orm"
+import { buildFilterConditions, buildUpdateValues, mapRow } from "./advisor-repository-helpers"
+import crypto from "crypto"
+import { AdvisorInsert } from "./types"
+
 export class AdvisorDrizzleRepository implements AdvisorRepository {
-  // In the real implementation, receive a database connection
-  // constructor(private db: Database) {}
+  constructor(private readonly db: Database) {}
 
   async getById(id: string): Promise<Advisor | null> {
-    // TODO: implement with database query
-    return null
+    const rows = await this.db.select().from(advisors).where(eq(advisors.id, id)).limit(1)
+    return rows.length > 0 ? mapRow(rows[0]) : null
   }
 
   async list(filters: AdvisorFilters, limit: number, offset: number): Promise<{ rows: Advisor[]; count: number }> {
-    // TODO: implement with database query
-    return { rows: [], count: 0 }
+    const conditions = buildFilterConditions(filters)
+    const whereClause = conditions.length > 0 ? and(...conditions as any[]) : undefined
+
+    const [{ total }] = await this.db
+      .select({ total: sql<number>`count(*)` })
+      .from(advisors)
+      .where(whereClause)
+
+    const DBRows = await this.db
+      .select()
+      .from(advisors)
+      .where(whereClause)
+      .limit(limit)
+      .offset(offset)
+
+    return { rows: DBRows.map(mapRow), count: Number(total) }
   }
 
   async create(input: AdvisorCreate): Promise<Advisor> {
-    // TODO: implement with INSERT
-    throw new Error("Not implemented")
+    const values: AdvisorInsert = {
+      id: crypto.randomUUID(),
+      first_name: input.firstName,
+      last_name: input.lastName,
+      email: input.email,
+      type: input.type,
+      status: input.status,
+      role: input.role,
+      workspace_code: input.workspaceCode ?? "default"
+    }
+
+    const [row] = await this.db.insert(advisors).values(values).returning()
+    return mapRow(row)
   }
 
   async update(id: string, input: AdvisorUpdate): Promise<Advisor | null> {
-    // TODO: implement with UPDATE
-    return null
+    const updateValues = buildUpdateValues(input)
+    if (Object.keys(updateValues).length === 0) {
+      return this.getById(id)
+    }
+
+    const [row] = await this.db.update(advisors)
+      .set(updateValues)
+      .where(eq(advisors.id, id))
+      .returning()
+
+    return row ? mapRow(row) : null
   }
 
   async delete(id: string): Promise<boolean> {
-    // TODO: implement with DELETE
-    return false
+    const [deleted] = await this.db.delete(advisors).where(eq(advisors.id, id)).returning()
+    return !!deleted
   }
 }
